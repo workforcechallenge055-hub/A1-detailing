@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1 Detailing Solutions CRM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== BASE STYLES ===== */
+        :root {
+            --primary: #e50914;
+            --secondary: #f39c12;
+            --dark: #141414;
+            --medium: #222;
+            --light: #f3f3f3;
+            --text-gray: #808080;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            color: var(--light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .crm-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ===== HEADER STYLES ===== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            background: rgba(20, 20, 20, 0.95);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        
+        .logo-badge {
+            background: var(--secondary);
+            color: var(--dark);
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 10px 20px;
+            width: 40%;
+            transition: all 0.3s;
+        }
+        
+        .search-bar:focus-within {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(227, 9, 20, 0.3);
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            font-size: 1rem;
+            padding: 0 10px;
+        }
+        
+        /* ===== FILTER SECTION ===== */
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(227, 9, 20, 0.4);
+        }
+        
+        /* ===== SERVICE CARDS ===== */
+        .category-row {
+            margin-bottom: 50px;
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .category-icon {
+            color: var(--secondary);
+            background: rgba(243, 156, 18, 0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .client-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 25px;
+            padding: 15px 5px;
+            scrollbar-width: none;
+        }
+        
+        .client-row::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* ===== CLIENT CARD ===== */
+        .client-card {
+            min-width: 260px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--medium);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .client-card:hover {
+            transform: scale(1.08);
+            z-index: 10;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .client-card:hover .quick-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .service-image {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .service-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .client-info {
+            padding: 20px;
+        }
+        
+        .client-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .client-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-active {
+            background-color: #2ecc71;
+        }
+        
+        .status-prospect {
+            background-color: #f39c12;
+        }
+        
+        .status-past {
+            background-color: #e74c3c;
+        }
+        
+        .pricing {
+            margin-top: 10px;
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .quick-view {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .quick-view h4 {
+            margin-bottom: 12px;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .quick-view p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* ===== CLIENT DETAIL VIEW ===== */
+        .client-detail {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+            padding: 40px;
+        }
+        
+        .detail-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .detail-poster {
+            width: 350px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .detail-info {
+            flex: 1;
+        }
+        
+        .detail-name {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+        
+        .detail-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            color: var(--text-gray);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .detail-overview {
+            max-width: 800px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 35px;
+        }
+        
+        .detail-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s;
+        }
+        
+        .detail-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+        
+        .close-detail {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: var(--primary);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .close-detail:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: #c40811;
+        }
+        
+        /* ===== ANALYTICS ===== */
+        .analytics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .analytics-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            border-top: 3px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .analytics-card h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 6px;
+        }
+        
+        /* ===== FOOTER ===== */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .footer-logo {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-address {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1024px) {
+            .search-bar {
+                width: 50%;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+            }
+            
+            .detail-poster {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px 0;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .client-card {
+                min-width: 240px;
+            }
+            
+            .detail-name {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .client-card {
+                min-width: 220px;
+            }
+            
+            .detail-section h3 {
+                font-size: 1.3rem;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="crm-container">
+            <nav class="navbar">
+                <a href="#" class="logo">
+                    <i class="fas fa-spa"></i>
+                    A1 Detailing CRM
+                    <span class="logo-badge">ACCRA</span>
+                </a>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search clients by name, service, or status...">
+                </div>
+                <div class="user-actions">
+                    <button class="bg-[#e50914] hover:bg-[#c40811] text-white px-6 py-3 rounded-full transition-all">
+                        <i class="fas fa-plus mr-2"></i> New Client
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="crm-container">
+        <!-- Filter Section -->
+        <section class="filter-section">
+            <button class="filter-btn active">All Clients</button>
+            <button class="filter-btn">Car Detailing</button>
+            <button class="filter-btn">Home Detailing</button>
+            <button class="filter-btn">Jet Detailing</button>
+            <button class="filter-btn">Office Detailing</button>
+            <button class="filter-btn">Corporate Events</button>
+            <button class="filter-btn">VIP Clients</button>
+            <button class="filter-btn">Payment Due</button>
+        </section>
+
+        <!-- Analytics Dashboard -->
+        <section class="analytics-section">
+            <div class="analytics-card">
+                <h3><i class="fas fa-chart-line mr-2"></i> Monthly Revenue</h3>
+                <p>₵ 84,500 / ₵ 120,000 target</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 70%"></div>
+                </div>
+            </div>
+            <div class="analytics-card">
+                <h3><i class="fas fa-tasks mr-2"></i> Service Completion</h3>
+                <p>92% of services completed</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 92%"></div>
+                </div>
+            </div>
+            <div class="analytics-card">
+                <h3><i class="fas fa-users mr-2"></i> Client Retention</h3>
+                <p>78% repeat customers</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 78%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Car Detailing Clients -->
+        <section class="category-row">
+            <h2 class="category-title">
+                <span class="category-icon">
+                    <i class="fas fa-car"></i>
+                </span>
+                Car Detailing Clients
+            </h2>
+            <div class="client-row">
+                <div class="client-card">
+                    <div class="service-badge">Premium</div>
+                    <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Car Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Kwame Mensah</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>Range Rover | Monthly</span>
+                        </div>
+                        <div class="pricing">₵ 1,200</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Full Detailing Package</h4>
+                        <p><i class="fas fa-calendar"></i> Next appointment: 15 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (024) 123-4567</p>
+                        <p><i class="fas fa-map-marker"></i> East Legon, Accra</p>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="service-badge">Standard</div>
+                    <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Car Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Nana Ama Boateng</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>Toyota Camry | Bi-weekly</span>
+                        </div>
+                        <div class="pricing">₵ 850</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Exterior & Interior</h4>
+                        <p><i class="fas fa-calendar"></i> Next appointment: 12 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (020) 765-4321</p>
+                        <p><i class="fas fa-map-marker"></i> Osu, Accra</p>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="service-badge">VIP</div>
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Car Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Kofi Ansah</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>Mercedes G-Wagon | Weekly</span>
+                        </div>
+                        <div class="pricing">₵ 2,500</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Platinum Package</h4>
+                        <p><i class="fas fa-calendar"></i> Next appointment: 10 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (054) 987-6543</p>
+                        <p><i class="fas fa-map-marker"></i> Airport Residential, Accra</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Home Detailing Clients -->
+        <section class="category-row">
+            <h2 class="category-title">
+                <span class="category-icon">
+                    <i class="fas fa-home"></i>
+                </span>
+                Home Detailing Clients
+            </h2>
+            <div class="client-row">
+                <div class="client-card">
+                    <div class="service-badge">Premium</div>
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Home Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Abena Osei</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>5-Bedroom Villa | Monthly</span>
+                        </div>
+                        <div class="pricing">₵ 5,800</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Full Home Detailing</h4>
+                        <p><i class="fas fa-calendar"></i> Next appointment: 18 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (027) 112-2334</p>
+                        <p><i class="fas fa-map-marker"></i> Trasacco Valley, Accra</p>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="service-badge">Standard</div>
+                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Home Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Yaw Asante</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>3-Bedroom Apartment | Quarterly</span>
+                        </div>
+                        <div class="pricing">₵ 3,200</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Deep Cleaning Service</h4>
+                        <p><i class="fas fa-calendar"></i> Next appointment: 25 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (024) 556-6778</p>
+                        <p><i class="fas fa-map-marker"></i> Cantonments, Accra</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Corporate & Jet Detailing -->
+        <section class="category-row">
+            <h2 class="category-title">
+                <span class="category-icon">
+                    <i class="fas fa-briefcase"></i>
+                </span>
+                Corporate & Jet Detailing
+            </h2>
+            <div class="client-row">
+                <div class="client-card">
+                    <div class="service-badge">VIP</div>
+                    <img src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Jet Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Ghana Airways</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>Private Jet Fleet | Contract</span>
+                        </div>
+                        <div class="pricing">₵ 42,000/mo</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Full Jet Detailing</h4>
+                        <p><i class="fas fa-calendar"></i> Next service: 20 Nov 2023</p>
+                        <p><i class="fas fa-phone"></i> (030) 223-3445</p>
+                        <p><i class="fas fa-map-marker"></i> Kotoka Airport, Accra</p>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="service-badge">Premium</div>
+                    <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Office Detailing" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">MegaCorp Ghana</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-active"></span>
+                            <span>Corporate Office | Weekly</span>
+                        </div>
+                        <div class="pricing">₵ 12,500/mo</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Office Complex Detailing</h4>
+                        <p><i class="fas fa-calendar"></i> Next service: Every Monday</p>
+                        <p><i class="fas fa-phone"></i> (030) 112-2334</p>
+                        <p><i class="fas fa-map-marker"></i> Ridge, Accra</p>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="service-badge">Event</div>
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Corporate Event" class="service-image">
+                    <div class="client-info">
+                        <h3 class="client-name">Ghana Tech Summit</h3>
+                        <div class="client-status">
+                            <span class="status-indicator status-prospect"></span>
+                            <span>Annual Conference | Upcoming</span>
+                        </div>
+                        <div class="pricing">₵ 28,000</div>
+                    </div>
+                    <div class="quick-view">
+                        <h4>Event Venue Detailing</h4>
+                        <p><i class="fas fa-calendar"></i> Event Date: 15-17 Dec 2023</p>
+                        <p><i class="fas fa-phone"></i> (024) 778-8990</p>
+                        <p><i class="fas fa-map-marker"></i> Kempinski Hotel, Accra</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Client Detail View -->
+    <div class="client-detail" id="clientDetail">
+        <button class="close-detail" onclick="closeDetail()">&times;</button>
+        <div class="detail-header">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Kofi Ansah" class="detail-poster">
+            <div class="detail-info">
+                <h1 class="detail-name">Kofi Ansah - Mercedes G-Wagon</h1>
+                <div class="detail-meta">
+                    <span><span class="status-indicator status-active"></span> Active VIP Client</span>
+                    <span>Car Detailing - Platinum Package</span>
+                    <span>Weekly Service</span>
+                </div>
+                <div class="detail-overview">
+                    <p>Kofi Ansah is a high-value VIP client who requires weekly premium detailing for his Mercedes G-Wagon. He expects meticulous attention to detail and prefers early morning appointments. He has been a loyal customer for 2 years and refers several new clients each quarter.</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-info-circle"></i> Client Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <p><strong>Contact:</strong> (054) 987-6543</p>
+                            <p><strong>Email:</strong> kofi.ansah@example.com</p>
+                            <p><strong>Location:</strong> Airport Residential, Accra</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Service Package:</strong> Platinum Full Detailing</p>
+                            <p><strong>Frequency:</strong> Weekly (Every Saturday)</p>
+                            <p><strong>Price:</strong> ₵ 2,500 per service</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-history"></i> Service History</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <p><strong>4 Nov 2023:</strong> Full interior & exterior detailing</p>
+                            <p><i class="fas fa-check-circle text-green-500"></i> Completed</p>
+                            <p><strong>Technician:</strong> Kwame Appiah</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>28 Oct 2023:</strong> Premium wash + ceramic coating</p>
+                            <p><i class="fas fa-check-circle text-green-500"></i> Completed</p>
+                            <p><strong>Technician:</strong> Ama Serwaa</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>21 Oct 2023:</strong> Interior deep clean + leather treatment</p>
+                            <p><i class="fas fa-check-circle text-green-500"></i> Completed</p>
+                            <p><strong>Technician:</strong> Yaw Boateng</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-bell"></i> Upcoming & Reminders</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <p><strong>Next Appointment:</strong> Saturday, 11 Nov 2023 at 8:00 AM</p>
+                            <p><i class="fas fa-bell text-yellow-500"></i> Confirmation sent</p>
+                        </div>
+                        <div class="detail-item">
+                            <p><strong>Quarterly Maintenance:</strong> Ceramic coating refresh</p>
+                            <p><i class="fas fa-bell text-blue-500"></i> Due in 3 weeks</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3><i class="fas fa-chart-bar"></i> Client Analytics</h3>
+                    <div class="analytics-section">
+                        <div class="analytics-card">
+                            <h3>Total Spending</h3>
+                            <p>₵ 62,500 (24 services)</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Referral Value</h3>
+                            <p>₵ 42,000 from 7 referrals</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Satisfaction Rating</h3>
+                            <p>4.9/5 from 12 reviews</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="crm-container">
+            <div class="footer-logo">A1 Detailing Solutions</div>
+            <div class="footer-address">
+                <p><i class="fas fa-map-marker-alt mr-2"></i> 24 Independence Avenue, Accra, Ghana</p>
+                <p><i class="fas fa-phone mr-2"></i> (030) 123-4567 | (024) 987-6543</p>
+            </div>
+            <p>Premium Detailing Services for Cars, Homes, Jets, Offices & Corporate Events</p>
+            <p class="mt-4 text-gray-500">© 2023 A1 Detailing Solutions CRM. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== CLIENT DETAIL FUNCTIONS =====
+        function openDetail() {
+            document.getElementById('clientDetail').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDetail() {
+            document.getElementById('clientDetail').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // ===== CLIENT CARD EVENT LISTENERS =====
+        document.querySelectorAll('.client-card').forEach(card => {
+            card.addEventListener('click', openDetail);
+        });
+        
+        // ===== FILTER BUTTON FUNCTIONALITY =====
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const filter = this.textContent.toLowerCase();
+                if(filter === 'all clients') {
+                    document.querySelectorAll('.category-row').forEach(row => {
+                        row.style.display = 'block';
+                    });
+                } else {
+                    document.querySelectorAll('.category-row').forEach(row => {
+                        row.style.display = 'none';
+                    });
+                    
+                    if(filter.includes('car')) {
+                        document.querySelectorAll('.category-row')[0].style.display = 'block';
+                    } else if(filter.includes('home')) {
+                        document.querySelectorAll('.category-row')[1].style.display = 'block';
+                    } else if(filter.includes('corporate') || filter.includes('jet')) {
+                        document.querySelectorAll('.category-row')[2].style.display = 'block';
+                    } else {
+                        document.querySelectorAll('.category-row').forEach(row => {
+                            row.style.display = 'block';
+                        });
+                    }
+                }
+            });
+        });
+        
+        // ===== SEARCH FUNCTIONALITY =====
+        const searchInput = document.querySelector('.search-bar input');
+        searchInput.addEventListener('keyup', function(e) {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            document.querySelectorAll('.client-card').forEach(card => {
+                const clientName = card.querySelector('.client-name').textContent.toLowerCase();
+                if(clientName.includes(searchTerm) || searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Initialize tooltips
+        document.querySelectorAll('.service-badge').forEach(badge => {
+            badge.title = badge.textContent + ' Package';
+        });
+    </script>
+</body>
+</html>
